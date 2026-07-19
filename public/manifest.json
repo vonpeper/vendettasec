@@ -1,0 +1,18 @@
+{
+  "name": "Vendetta Sequence Player",
+  "short_name": "Vendetta Player",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#050505",
+  "theme_color": "#dc2626",
+  "description": "Offline-first PWA sequence player for live music shows.",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
