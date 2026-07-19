@@ -160,8 +160,8 @@ export default function EditSetlistPage() {
       <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-8 flex flex-col gap-8">
         
         {/* Setlist settings inputs */}
-        <section className="border border-neutral-900 rounded-[2.5rem] p-6 sm:p-8 bg-neutral-900/10 grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="space-y-1.5">
+        <section className="border border-neutral-900 rounded-[2.5rem] p-6 sm:p-8 bg-neutral-900/10">
+          <div className="space-y-1.5 max-w-md">
             <label className="text-[10px] uppercase font-black tracking-widest text-neutral-500">Nombre del Setlist</label>
             <input
               type="text"
@@ -174,47 +174,6 @@ export default function EditSetlistPage() {
               className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-650 transition-colors font-bold"
             />
           </div>
-
-          <div className="space-y-1.5">
-            <label className="text-[10px] uppercase font-black tracking-widest text-neutral-500">Evento (Lugar/Cliente)</label>
-            <input
-              type="text"
-              placeholder="Opcional"
-              value={eventName}
-              onChange={(e) => {
-                setEventName(e.target.value);
-                handleFieldChange({ eventName: e.target.value });
-              }}
-              className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-650 transition-colors"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-[10px] uppercase font-black tracking-widest text-neutral-500">Fecha del Evento</label>
-            <input
-              type="date"
-              value={eventDate}
-              onChange={(e) => {
-                setEventDate(e.target.value);
-                handleFieldChange({ eventDate: e.target.value });
-              }}
-              className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-650 transition-colors font-mono"
-            />
-          </div>
-
-          <div className="sm:col-span-3 space-y-1.5">
-            <label className="text-[10px] uppercase font-black tracking-widest text-neutral-500">Notas de Logística</label>
-            <input
-              type="text"
-              placeholder="Anotaciones importantes para la banda en el escenario..."
-              value={notes}
-              onChange={(e) => {
-                setNotes(e.target.value);
-                handleFieldChange({ notes: e.target.value });
-              }}
-              className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-650 transition-colors"
-            />
-          </div>
         </section>
 
         {/* Reordering and selection workspace */}
@@ -222,9 +181,24 @@ export default function EditSetlistPage() {
           
           {/* Library Tracks Selector (Left) */}
           <div className="border border-neutral-900 rounded-[2.5rem] p-6 bg-neutral-900/10 flex flex-col gap-4">
-            <div>
-              <span className="text-[9px] font-black text-red-500 uppercase tracking-widest">PASO 1</span>
-              <h3 className="text-lg font-black uppercase text-white tracking-wide">Biblioteca Disponible</h3>
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[9px] font-black text-red-500 uppercase tracking-widest">PASO 1</span>
+                <h3 className="text-lg font-black uppercase text-white tracking-wide">Biblioteca Disponible</h3>
+              </div>
+              <button
+                onClick={async () => {
+                  const blockName = window.prompt("Introduce el nombre del bloque (Ej: Bloque 1, Acústico, Pop):");
+                  if (!blockName || !blockName.trim()) return;
+                  if (!setlist) return;
+                  const blockId = `block:${blockName.trim()}`;
+                  const updatedSongIds = [...setlist.songIds, blockId];
+                  await handleFieldChange({ songIds: updatedSongIds });
+                }}
+                className="px-3 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-350 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+              >
+                + BLOQUE
+              </button>
             </div>
 
             {librarySongs.length === 0 ? (
@@ -277,8 +251,52 @@ export default function EditSetlistPage() {
             ) : (
               <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
                 {setlist.songIds.map((songId, index) => {
-                  const song = librarySongs.find(s => s.id === songId);
+                  const isBlockItem = songId.startsWith("block:");
+                  const blockTitle = isBlockItem ? songId.replace("block:", "") : "";
+                  const song = !isBlockItem ? librarySongs.find(s => s.id === songId) : undefined;
                   
+                  if (isBlockItem) {
+                    return (
+                      <div
+                        key={`block-${index}`}
+                        className="p-4 bg-red-950/20 border border-red-900/40 rounded-2xl flex items-center justify-between gap-4 animate-fadeIn"
+                      >
+                        <div className="flex items-center gap-3 truncate">
+                          <span className="text-[9px] font-black text-red-500 bg-red-950/50 px-2 py-1 rounded-md shrink-0 uppercase tracking-widest">
+                            BLOQUE
+                          </span>
+                          <h4 className="font-black text-xs uppercase tracking-wider text-white truncate">
+                            {blockTitle}
+                          </h4>
+                        </div>
+
+                        {/* Controls: Up, Down, Remove */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <button
+                            disabled={index === 0}
+                            onClick={() => moveSong(index, "up")}
+                            className="p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-neutral-850"
+                          >
+                            <ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            disabled={index === setlist.songIds.length - 1}
+                            onClick={() => moveSong(index, "down")}
+                            className="p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-neutral-850"
+                          >
+                            <ArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => removeSongFromSetlist(index)}
+                            className="p-2 rounded-lg bg-neutral-900 hover:bg-red-950/40 text-neutral-400 hover:text-red-400 transition-all border border-neutral-850"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  }
+
                   return (
                     <div
                       key={`${songId}-${index}`}
@@ -286,7 +304,7 @@ export default function EditSetlistPage() {
                     >
                       <div className="flex items-center gap-3 truncate">
                         <span className="font-mono text-xs font-bold text-neutral-500 bg-neutral-950 w-7 h-7 shrink-0 rounded-lg flex items-center justify-center">
-                          {index + 1}
+                          {setlist.songIds.slice(0, index).filter(id => !id.startsWith("block:")).length + 1}
                         </span>
                         
                         <div className="truncate">

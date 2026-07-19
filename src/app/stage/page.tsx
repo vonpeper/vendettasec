@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 export default function StagePage() {
-  const [songs, setSongs] = useState<Song[]>([]);
+  const [songs, setSongs] = useState<any[]>([]);
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   
@@ -86,14 +86,10 @@ export default function StagePage() {
         handlePlayPause();
       } else if (key === "ArrowRight") {
         e.preventDefault();
-        if (currentIndex < songs.length - 1) {
-          selectSong(currentIndex + 1);
-        }
+        goToNextSong();
       } else if (key === "ArrowLeft") {
         e.preventDefault();
-        if (!isLocked && currentIndex > 0) {
-          selectSong(currentIndex - 1);
-        }
+        goToPrevSong();
       } else if (key === "Escape") {
         e.preventDefault();
         if (!isLocked) {
@@ -142,16 +138,30 @@ export default function StagePage() {
       const validSongs = allSongs.filter(s => s.validationStatus === "valid");
       
       const activeSetlistId = await getSetting<string>("last_selected_setlist_id");
-      let activeSongs = validSongs;
+      let activeSongs: any[] = validSongs;
 
       if (activeSetlistId) {
         const setlistObj = await getSetlist(activeSetlistId);
         if (setlistObj) {
           setSetlistName(setlistObj.name);
-          const mapped: Song[] = [];
+          const mapped: any[] = [];
           setlistObj.songIds.forEach(id => {
-            const foundSong = validSongs.find(s => s.id === id);
-            if (foundSong) mapped.push(foundSong);
+            if (id.startsWith("block:")) {
+              const blockTitle = id.replace("block:", "");
+              mapped.push({
+                id: id,
+                title: blockTitle,
+                isBlock: true,
+                fileName: "",
+                defaultVolume: 1.0,
+                isAvailableOffline: true,
+                validationStatus: "valid",
+                storageKey: ""
+              });
+            } else {
+              const foundSong = validSongs.find(s => s.id === id);
+              if (foundSong) mapped.push(foundSong);
+            }
           });
           activeSongs = mapped;
         }
@@ -170,17 +180,18 @@ export default function StagePage() {
       setShowClockSetting(showClockVal !== null ? showClockVal : true);
       setShowBatterySetting(showBatteryVal !== null ? showBatteryVal : true);
 
-      if (activeSongs.length > 0) {
+      const firstSong = activeSongs.find(s => !s.isBlock);
+      if (firstSong) {
         const lastSongId = await getSetting<string>("last_stage_song_id");
-        const found = activeSongs.find(s => s.id === lastSongId);
+        const found = activeSongs.find(s => s.id === lastSongId && !s.isBlock);
         if (found && activeSongs.indexOf(found) !== -1) {
           setCurrentSong(found);
           setCurrentIndex(activeSongs.indexOf(found));
           await prepareAudio(found);
         } else {
-          setCurrentSong(activeSongs[0]);
-          setCurrentIndex(0);
-          await prepareAudio(activeSongs[0]);
+          setCurrentSong(firstSong);
+          setCurrentIndex(activeSongs.indexOf(firstSong));
+          await prepareAudio(firstSong);
         }
       }
     } catch (err) {
@@ -256,9 +267,34 @@ export default function StagePage() {
     AudioEngine.getInstance().stop();
   };
 
+  const goToNextSong = () => {
+    if (isLocked) return;
+    let nextIndex = currentIndex + 1;
+    while (nextIndex < songs.length && songs[nextIndex].isBlock) {
+      nextIndex++;
+    }
+    if (nextIndex < songs.length) {
+      selectSong(nextIndex);
+    }
+  };
+
+  const goToPrevSong = () => {
+    if (isLocked) return;
+    let prevIndex = currentIndex - 1;
+    while (prevIndex >= 0 && songs[prevIndex].isBlock) {
+      prevIndex--;
+    }
+    if (prevIndex >= 0) {
+      selectSong(prevIndex);
+    }
+  };
+
   const handleSongEnded = () => {
-    if (currentIndex < songs.length - 1) {
-      const nextIndex = currentIndex + 1;
+    let nextIndex = currentIndex + 1;
+    while (nextIndex < songs.length && songs[nextIndex].isBlock) {
+      nextIndex++;
+    }
+    if (nextIndex < songs.length) {
       const nextSong = songs[nextIndex];
       setCurrentIndex(nextIndex);
       setCurrentSong(nextSong);
@@ -269,6 +305,7 @@ export default function StagePage() {
   const selectSong = async (index: number) => {
     if (isLocked) return;
     if (index < 0 || index >= songs.length) return;
+    if (songs[index].isBlock) return;
     
     const target = songs[index];
     setCurrentIndex(index);
@@ -293,9 +330,14 @@ export default function StagePage() {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-  const nextSongName = currentIndex < songs.length - 1 
-    ? songs[currentIndex + 1].title 
-    : "FIN DEL SETLIST";
+  const getNextSongTitle = () => {
+    let nextIndex = currentIndex + 1;
+    while (nextIndex < songs.length && songs[nextIndex].isBlock) {
+      nextIndex++;
+    }
+    return nextIndex < songs.length ? songs[nextIndex].title : "FIN DEL SETLIST";
+  };
+  const nextSongName = getNextSongTitle();
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white flex flex-col justify-between select-none">
@@ -372,26 +414,41 @@ export default function StagePage() {
             </div>
             
             <div className="flex-1 space-y-2 overflow-y-auto pr-1">
-              {songs.map((s, idx) => (
-                <button
-                  key={s.id}
-                  disabled={isLocked}
-                  onClick={() => {
-                    selectSong(idx);
-                    setIsListOpen(false);
-                  }}
-                  className={`w-full text-left p-3.5 rounded-2xl border text-xs font-bold uppercase transition-all duration-300 flex items-center justify-between gap-3 ${
-                    currentSong?.id === s.id
-                      ? "bg-red-650/10 border-red-500 text-white shadow-lg shadow-red-600/5"
-                      : isLocked 
-                        ? "bg-transparent border-transparent text-neutral-600 cursor-not-allowed"
-                        : "bg-transparent border-transparent hover:bg-neutral-900 hover:border-neutral-800 text-neutral-400 hover:text-white"
-                  }`}
-                >
-                  <span className="truncate">{idx + 1}. {s.title}</span>
-                  {s.key && <span className="font-mono text-[10px] text-amber-500 shrink-0">{s.key}</span>}
-                </button>
-              ))}
+              {songs.map((s, idx) => {
+                if (s.isBlock) {
+                  return (
+                    <div 
+                      key={s.id}
+                      className="py-2.5 px-4 mt-4 first:mt-0 border-l-2 border-red-600 text-[9px] font-black text-red-500 uppercase tracking-[0.2em] bg-red-950/5 rounded-xl"
+                    >
+                      {s.title}
+                    </div>
+                  );
+                }
+
+                const songNumber = songs.slice(0, idx).filter(item => !item.isBlock).length + 1;
+
+                return (
+                  <button
+                    key={s.id}
+                    disabled={isLocked}
+                    onClick={() => {
+                      selectSong(idx);
+                      setIsListOpen(false);
+                    }}
+                    className={`w-full text-left p-3.5 rounded-2xl border text-xs font-bold uppercase transition-all duration-300 flex items-center justify-between gap-3 ${
+                      currentSong?.id === s.id
+                        ? "bg-red-650/10 border-red-500 text-white shadow-lg shadow-red-600/5"
+                        : isLocked 
+                          ? "bg-transparent border-transparent text-neutral-600 cursor-not-allowed"
+                          : "bg-transparent border-transparent hover:bg-neutral-900 hover:border-neutral-800 text-neutral-400 hover:text-white"
+                    }`}
+                  >
+                    <span className="truncate">{songNumber}. {s.title}</span>
+                    {s.key && <span className="font-mono text-[10px] text-amber-500 shrink-0">{s.key}</span>}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -407,7 +464,7 @@ export default function StagePage() {
             {/* Song Meta (Title, artist, BPM) */}
             <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500 font-black tracking-widest uppercase">
-                <span>TEMA {currentIndex + 1} DE {songs.length}</span>
+                <span>TEMA {songs.slice(0, currentIndex).filter(item => !item.isBlock).length + 1} DE {songs.filter(item => !item.isBlock).length}</span>
                 <span>•</span>
                 <span className="text-red-500">{currentSong?.bpm || "?"} BPM</span>
                 <span>•</span>

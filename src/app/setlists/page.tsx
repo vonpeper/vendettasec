@@ -14,9 +14,6 @@ export default function SetlistsPage() {
   // Create modal state
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [newName, setNewName] = useState("");
-  const [newEventName, setNewEventName] = useState("");
-  const [newEventDate, setNewEventDate] = useState("");
-  const [newNotes, setNewNotes] = useState("");
 
   useEffect(() => {
     loadData();
@@ -47,9 +44,6 @@ export default function SetlistsPage() {
       const newSet: Setlist = {
         id: crypto.randomUUID(),
         name: newName.trim(),
-        eventName: newEventName.trim() || undefined,
-        eventDate: newEventDate || undefined,
-        notes: newNotes.trim() || undefined,
         songIds: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -60,9 +54,6 @@ export default function SetlistsPage() {
       
       // Reset form
       setNewName("");
-      setNewEventName("");
-      setNewEventDate("");
-      setNewNotes("");
 
       await loadData();
     } catch (err) {
@@ -195,18 +186,7 @@ export default function SetlistsPage() {
                   
                   <div className="space-y-1">
                     <h3 className="text-2xl font-black uppercase text-white tracking-wide truncate">{set.name}</h3>
-                    {set.eventName && (
-                      <p className="text-xs text-neutral-400 font-bold uppercase tracking-wider flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5 text-neutral-600" /> {set.eventName} {set.eventDate ? `(${set.eventDate})` : ""}
-                      </p>
-                    )}
                   </div>
-
-                  {set.notes && (
-                    <p className="text-xs text-neutral-500 italic max-w-md truncate">
-                      "{set.notes}"
-                    </p>
-                  )}
                 </div>
 
                 {/* Card footer buttons */}
@@ -270,37 +250,6 @@ export default function SetlistsPage() {
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                     className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600 transition-colors"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] uppercase font-black tracking-widest text-neutral-500">Nombre del Evento (Lugar/Cliente)</label>
-                  <input
-                    type="text"
-                    placeholder="Opcional"
-                    value={newEventName}
-                    onChange={(e) => setNewEventName(e.target.value)}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600 transition-colors"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] uppercase font-black tracking-widest text-neutral-500">Fecha del Evento</label>
-                  <input
-                    type="date"
-                    value={newEventDate}
-                    onChange={(e) => setNewEventDate(e.target.value)}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600 transition-colors font-mono"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] uppercase font-black tracking-widest text-neutral-500">Notas Adicionales</label>
-                  <textarea
-                    value={newNotes}
-                    onChange={(e) => setNewNotes(e.target.value)}
-                    placeholder="Comentarios o logística del show..."
-                    className="w-full h-24 bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600 transition-colors resize-none"
                   />
                 </div>
 

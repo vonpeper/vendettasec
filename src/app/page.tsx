@@ -7,7 +7,8 @@ import { getStorageEstimate, requestStoragePersistence } from "@/lib/storage/opf
 import { getAllSongs, getSetting, getSetlist } from "@/lib/storage/indexedDb";
 import { 
   Play, Library, ShieldCheck, Activity, HardDrive, 
-  Wifi, WifiOff, Settings, AlertTriangle, ArrowRight, Music 
+  Wifi, WifiOff, Settings, AlertTriangle, ArrowRight, Music,
+  Share, Smartphone, Laptop, Check, Copy, X
 } from "lucide-react";
 
 export default function HomePage() {
@@ -20,6 +21,13 @@ export default function HomePage() {
   const [lastSetlistName, setLastSetlistName] = useState<string | null>(null);
   const [lastSetlistId, setLastSetlistId] = useState<string | null>(null);
 
+  const [isInstalled, setIsInstalled] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+  const [deviceOS, setDeviceOS] = useState<"ios" | "android" | "other">("other");
+  const [installTab, setInstallTab] = useState<"ios" | "android" | "other">("ios");
+  const [linkCopied, setLinkCopied] = useState(false);
+
   useEffect(() => {
     // 1. Register service worker for offline support
     registerServiceWorker();
@@ -31,12 +39,39 @@ export default function HomePage() {
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
 
+    // Check if running in standalone mode
+    if (typeof window !== "undefined") {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone;
+      setIsInstalled(!!isStandalone);
+
+      // Detect OS
+      const ua = navigator.userAgent.toLowerCase();
+      if (/ipad|iphone|ipod/.test(ua) && !(window as any).MSStream) {
+        setDeviceOS("ios");
+        setInstallTab("ios");
+      } else if (/android/.test(ua)) {
+        setDeviceOS("android");
+        setInstallTab("android");
+      } else {
+        setDeviceOS("other");
+        setInstallTab("other");
+      }
+    }
+
+    // Listen for install prompt
+    const handleBeforeInstall = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener("beforeinstallprompt", handleBeforeInstall);
+
     // 3. Load stats
     loadDashboardStats();
 
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
     };
   }, []);
 
@@ -109,6 +144,15 @@ export default function HomePage() {
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-950/20 border border-red-900/50 text-[10px] font-black text-red-400 uppercase tracking-widest animate-pulse">
               <WifiOff className="w-3.5 h-3.5 text-red-500" /> OFFLINE-MODE
             </span>
+          )}
+
+          {!isInstalled && (
+            <button
+              onClick={() => setIsInstallModalOpen(true)}
+              className="px-3.5 py-2 bg-red-600/10 hover:bg-red-600 border border-red-900/40 hover:border-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-white transition-all flex items-center gap-1.5 shadow-lg shadow-red-650/5"
+            >
+              <Smartphone className="w-3.5 h-3.5" /> INSTALAR APP
+            </button>
           )}
 
           <Link
@@ -270,6 +314,150 @@ export default function HomePage() {
       <footer className="max-w-6xl mx-auto w-full px-6 py-6 text-center text-[10px] font-black text-neutral-600 uppercase tracking-widest border-t border-neutral-900">
         © 2026 VENDETTA LIVE MUSIC • OFFLINE SEQUENCE PWA
       </footer>
+
+      {/* Install App Modal */}
+      {isInstallModalOpen && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-6 animate-fadeIn">
+          <div className="bg-neutral-950 border border-neutral-900 rounded-[2.5rem] w-full max-w-xl p-8 space-y-6 shadow-2xl relative">
+            <button 
+              onClick={() => setIsInstallModalOpen(false)}
+              className="absolute top-8 right-8 p-1.5 rounded-lg hover:bg-neutral-900 text-neutral-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="space-y-1">
+              <span className="text-[10px] font-black text-red-500 uppercase tracking-[0.2em]">INSTALACIÓN DISPOSITIVO</span>
+              <h3 className="text-xl font-black uppercase text-white tracking-wide">Instalar Vendetta Sec</h3>
+            </div>
+
+            {/* Pill selector tabs */}
+            <div className="flex bg-neutral-900 p-1.5 rounded-2xl border border-neutral-850">
+              <button 
+                onClick={() => setInstallTab("ios")} 
+                className={`flex-1 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-1.5 ${installTab === "ios" ? "bg-red-600 text-white shadow-md shadow-red-650/10" : "text-neutral-500 hover:text-neutral-350"}`}
+              >
+                <Smartphone className="w-4.5 h-4.5" /> iOS (iPhone)
+              </button>
+              <button 
+                onClick={() => setInstallTab("android")} 
+                className={`flex-1 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-1.5 ${installTab === "android" ? "bg-red-600 text-white shadow-md shadow-red-650/10" : "text-neutral-500 hover:text-neutral-350"}`}
+              >
+                <Smartphone className="w-4.5 h-4.5" /> Android
+              </button>
+              <button 
+                onClick={() => setInstallTab("other")} 
+                className={`flex-1 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-1.5 ${installTab === "other" ? "bg-red-600 text-white shadow-md shadow-red-650/10" : "text-neutral-500 hover:text-neutral-350"}`}
+              >
+                <Laptop className="w-4.5 h-4.5" /> Computadora
+              </button>
+            </div>
+
+            {/* Tab content */}
+            <div className="pt-2">
+              {installTab === "android" && (
+                <div className="space-y-6 text-center sm:text-left">
+                  <p className="text-xs text-neutral-450 leading-relaxed font-semibold">
+                    En Android puedes instalar la aplicación directamente en tu dispositivo con un solo clic.
+                  </p>
+                  
+                  {deferredPrompt ? (
+                    <div className="flex justify-center py-2">
+                      <button
+                        onClick={async () => {
+                          deferredPrompt.prompt();
+                          const choice = await deferredPrompt.userChoice;
+                          if (choice.outcome === "accepted") {
+                            setIsInstallModalOpen(false);
+                          }
+                          setDeferredPrompt(null);
+                        }}
+                        className="px-8 py-4 bg-red-600 hover:bg-red-500 border border-red-500 rounded-2xl font-black text-xs uppercase tracking-widest transition-all duration-300 shadow-xl shadow-red-600/10 flex items-center gap-2"
+                      >
+                        Instalar Ahora en Android
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4 text-left border border-neutral-900 rounded-3xl p-5 bg-neutral-900/15">
+                      <h4 className="text-xs font-black uppercase tracking-wider text-white">Instalación Manual:</h4>
+                      <ol className="list-decimal list-inside text-xs text-neutral-400 space-y-2.5 leading-relaxed font-semibold">
+                        <li>Abre <span className="text-white">secuencias.vendetta.mx</span> en <span className="text-red-400">Google Chrome</span>.</li>
+                        <li>Toca los tres puntos de menú (<span className="text-white">⋮</span>) arriba a la derecha.</li>
+                        <li>Selecciona <span className="text-white">"Instalar aplicación"</span> o <span className="text-white">"Agregar a la pantalla principal"</span>.</li>
+                      </ol>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {installTab === "ios" && (
+                <div className="space-y-6">
+                  {/* Detect Webview / In-App Browser */}
+                  {typeof navigator !== "undefined" && /fb_iab|instagram|whatsapp/i.test(navigator.userAgent) ? (
+                    <div className="space-y-4 border border-red-900/40 rounded-3xl p-5 bg-red-950/15 text-center">
+                      <span className="text-[10px] font-black text-red-500 uppercase tracking-widest block">Navegador no soportado</span>
+                      <p className="text-xs text-red-450 leading-relaxed font-semibold">
+                        Estás abriendo la web desde una aplicación (Facebook, WhatsApp, etc.). Para poder instalar, debes abrirla en Safari o Chrome real.
+                      </p>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText("https://secuencias.vendetta.mx");
+                          setLinkCopied(true);
+                          setTimeout(() => setLinkCopied(false), 2000);
+                        }}
+                        className="mx-auto px-5 py-2.5 bg-red-650/10 hover:bg-red-600 border border-red-900/30 hover:border-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-white transition-all flex items-center gap-1.5"
+                      >
+                        {linkCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                        {linkCopied ? "COPIADO" : "COPIAR ENLACE"}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4 border border-neutral-900 rounded-3xl p-6 bg-neutral-900/15">
+                      <h4 className="text-xs font-black uppercase tracking-wider text-white">Instrucciones para iOS:</h4>
+                      <ol className="list-decimal list-inside text-xs text-neutral-400 space-y-4 leading-relaxed font-semibold">
+                        <li>
+                          Abre la web en <span className="text-white">Safari</span> (o Chrome/Firefox para iOS).
+                        </li>
+                        <li>
+                          Toca el botón <span className="text-red-400 uppercase font-black inline-flex items-center gap-1 text-[10px] bg-red-950/40 px-2 py-1 rounded-md border border-red-900/30"><Share className="w-3 h-3" /> Compartir</span> 
+                          <span className="text-neutral-500 block text-[11px] mt-1 pl-5">
+                            (En Safari está abajo en la pantalla; en Chrome está arriba a la derecha de la URL).
+                          </span>
+                        </li>
+                        <li>
+                          Desplázate hacia abajo y selecciona <span className="text-white font-bold block pl-5 mt-1">"Agregar a inicio" / "Add to Home Screen"</span>.
+                        </li>
+                      </ol>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {installTab === "other" && (
+                <div className="space-y-6">
+                  <p className="text-xs text-neutral-450 leading-relaxed font-semibold text-center sm:text-left">
+                    Puedes instalar la aplicación en tu computadora (PC o Mac) usando Chrome, Edge o navegadores compatibles.
+                  </p>
+
+                  <div className="space-y-4 border border-neutral-900 rounded-3xl p-6 bg-neutral-900/15">
+                    <h4 className="text-xs font-black uppercase tracking-wider text-white">Instrucciones de Computadora:</h4>
+                    <ol className="list-decimal list-inside text-xs text-neutral-400 space-y-3 leading-relaxed font-semibold">
+                      <li>Usa <span className="text-white">Google Chrome</span> o <span className="text-white">Microsoft Edge</span>.</li>
+                      <li>
+                        En la barra de direcciones de arriba, haz clic en el icono de **Instalación** 
+                        <span className="text-neutral-500 font-mono text-[11px] block pl-5 mt-1">
+                          (se ve como un monitor con una flecha hacia abajo, a la derecha de la estrella de favoritos).
+                        </span>
+                      </li>
+                      <li>Haz clic en <span className="text-white font-bold">"Instalar"</span> para confirmar.</li>
+                    </ol>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
