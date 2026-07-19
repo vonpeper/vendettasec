@@ -1,0 +1,58 @@
+name: Deploy to Dokploy
+
+on:
+  workflow_run:
+    workflows: ["Build and push image"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Trigger Dokploy redeploy
+        env:
+          DOKPLOY_URL: ${{ vars.DOKPLOY_URL }}
+          DOKPLOY_TOKEN: ${{ secrets.DOKPLOY_TOKEN }}
+          APPLICATION_ID: ${{ vars.DOKPLOY_APPLICATION_ID }}
+          COMPOSE_ID: ${{ vars.DOKPLOY_COMPOSE_ID }}
+        run: |
+          set -e
+          if [ -z "$DOKPLOY_URL" ] || [ -z "$DOKPLOY_TOKEN" ]; then
+            echo "::error::Missing DOKPLOY_URL / DOKPLOY_TOKEN"
+            exit 1
+          fi
+
+          if [ -n "$APPLICATION_ID" ]; then
+            echo "Calling application.deploy on $DOKPLOY_URL for app $APPLICATION_ID"
+            response=$(curl -sw "\n%{http_code}" -X POST \
+              -H "x-api-key: $DOKPLOY_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"json\":{\"applicationId\":\"$APPLICATION_ID\"}}" \
+              "$DOKPLOY_URL/api/trpc/application.deploy")
+          elif [ -n "$COMPOSE_ID" ]; then
+            echo "Calling compose.deploy on $DOKPLOY_URL for compose $COMPOSE_ID"
+            response=$(curl -sw "\n%{http_code}" -X POST \
+              -H "x-api-key: $DOKPLOY_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"json\":{\"composeId\":\"$COMPOSE_ID\"}}" \
+              "$DOKPLOY_URL/api/trpc/compose.deploy")
+          else
+            echo "::error::Neither DOKPLOY_APPLICATION_ID nor DOKPLOY_COMPOSE_ID was provided."
+            exit 1
+          fi
+
+          body=$(echo "$response" | head -n -1)
+          code=$(echo "$response" | tail -n 1)
+          echo "HTTP $code"
+          echo "$body"
+          if [ "$code" != "200" ]; then
+            echo "::error::Dokploy deploy trigger failed (HTTP $code)"
+            exit 1
+          fi
+          echo "::notice::Deploy triggered. Watch Dokploy UI for rollout status."
