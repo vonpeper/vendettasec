@@ -211,31 +211,31 @@ export default function LibraryPage() {
     <div className="min-h-screen bg-neutral-950 text-white flex flex-col">
       {/* Header */}
       <header className="border-b border-neutral-900 bg-neutral-950/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="p-2 -ml-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 truncate">
+            <Link href="/" className="p-2 -ml-1 sm:-ml-2 rounded-xl bg-neutral-900 hover:bg-neutral-805 border border-neutral-800 transition-colors shrink-0">
               <ArrowLeft className="w-5 h-5 text-neutral-300" />
             </Link>
-            <h1 className="text-xl font-black uppercase tracking-widest text-white">
-              Biblioteca de Canciones
+            <h1 className="text-lg sm:text-xl font-black uppercase tracking-widest text-white truncate">
+              Biblioteca
             </h1>
           </div>
           
-          <div>
+          <div className="shrink-0">
             <button
               onClick={handleImportClick}
               disabled={importing}
-              className="px-5 py-2.5 bg-red-600 hover:bg-red-500 border border-red-500 rounded-2xl font-black text-xs uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-lg shadow-red-600/10 disabled:opacity-50"
+              className="px-3.5 py-2 sm:px-5 sm:py-2.5 bg-red-600 hover:bg-red-500 border border-red-500 rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest transition-all duration-300 flex items-center gap-1.5 sm:gap-2 shadow-lg shadow-red-600/10 disabled:opacity-50"
             >
               {importing ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  IMPORTANDO...
+                  <span>IMPORTANDO...</span>
                 </>
               ) : (
                 <>
                   <Plus className="w-4 h-4" />
-                  IMPORTAR CANCIÓN
+                  <span>IMPORTAR<span className="hidden sm:inline"> CANCIÓN</span></span>
                 </>
               )}
             </button>
@@ -251,7 +251,7 @@ export default function LibraryPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-8 flex flex-col gap-8">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-6 sm:gap-8">
         
         {/* Error / Validation Alerts */}
         {errorMsg && (
@@ -311,19 +311,19 @@ export default function LibraryPage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-3 sm:gap-4">
             {songs.map((song) => (
               <div 
                 key={song.id}
-                className={`border-2 rounded-[2rem] p-6 bg-neutral-900/30 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300 ${
+                className={`border-2 rounded-[1.5rem] sm:rounded-[2rem] p-4 sm:p-6 bg-neutral-900/30 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 transition-all duration-300 ${
                   previewSongId === song.id ? "border-red-600 bg-red-950/5" : "border-neutral-900"
                 }`}
               >
                 {/* Play and Metadata */}
-                <div className="flex items-center gap-5 flex-1">
+                <div className="flex items-center gap-4 sm:gap-5 flex-1">
                   <button
                     onClick={() => startPreview(song)}
-                    className={`w-14 h-14 rounded-2xl flex items-center justify-center border transition-all duration-300 shrink-0 ${
+                    className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center border transition-all duration-300 shrink-0 ${
                       previewSongId === song.id
                         ? "bg-red-600 border-red-500 text-white animate-pulse"
                         : "bg-neutral-900 hover:bg-neutral-800 border-neutral-800 text-neutral-300"
@@ -336,11 +336,11 @@ export default function LibraryPage() {
                     )}
                   </button>
                   
-                  <div className="space-y-1">
-                    <h4 className="font-black text-lg text-white tracking-wide leading-tight">
+                  <div className="space-y-1 truncate">
+                    <h4 className="font-black text-base sm:text-lg text-white tracking-wide leading-tight truncate">
                       {song.title}
                     </h4>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-neutral-500 font-bold uppercase tracking-wide">
+                    <div className="flex flex-wrap items-center gap-x-2 sm:gap-x-4 gap-y-1 text-[11px] sm:text-xs text-neutral-500 font-bold uppercase tracking-wide">
                       {song.artist && <span>{song.artist}</span>}
                       {song.artist && <span className="text-neutral-800">•</span>}
                       {song.bpm && <span className="text-red-500 font-mono">{song.bpm} BPM</span>}
@@ -355,14 +355,14 @@ export default function LibraryPage() {
                 </div>
 
                 {/* Controls and States */}
-                <div className="flex items-center gap-3 justify-end shrink-0 border-t border-neutral-900/60 pt-4 md:pt-0 md:border-0">
+                <div className="flex items-center gap-2 sm:gap-3 justify-end shrink-0 border-t border-neutral-900/60 pt-3 md:pt-0 md:border-0">
                   {/* Validation State badge */}
                   {song.validationStatus === "valid" ? (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-950/30 border border-emerald-900/50 text-[10px] font-black text-emerald-400 uppercase tracking-widest">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-950/30 border border-emerald-900/50 text-[10px] font-black text-emerald-400 uppercase tracking-widest">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Estéreo OK
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-950/30 border border-red-900/50 text-[10px] font-black text-red-400 uppercase tracking-widest">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-red-950/30 border border-red-900/50 text-[10px] font-black text-red-400 uppercase tracking-widest">
                       <AlertTriangle className="w-3.5 h-3.5" /> Faltante
                     </span>
                   )}
@@ -370,14 +370,14 @@ export default function LibraryPage() {
                   {/* Actions */}
                   <button
                     onClick={() => setEditingSong(song)}
-                    className="p-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors text-neutral-400 hover:text-white"
+                    className="p-2.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors text-neutral-400 hover:text-white"
                     title="Editar metadatos"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(song)}
-                    className="p-3 rounded-xl bg-neutral-900 hover:bg-red-950/50 border border-neutral-800 hover:border-red-900/40 transition-colors text-neutral-400 hover:text-red-400"
+                    className="p-2.5 rounded-lg bg-neutral-900 hover:bg-red-950/50 border border-neutral-800 hover:border-red-900/40 transition-colors text-neutral-400 hover:text-red-400"
                     title="Eliminar canción"
                   >
                     <Trash2 className="w-4 h-4" />

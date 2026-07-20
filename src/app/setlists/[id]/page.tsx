@@ -137,30 +137,30 @@ export default function EditSetlistPage() {
     <div className="min-h-screen bg-neutral-950 text-white flex flex-col">
       {/* Header */}
       <header className="border-b border-neutral-900 bg-neutral-950/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/setlists" className="p-2 -ml-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link href="/setlists" className="p-2 -ml-1 sm:-ml-2 rounded-xl bg-neutral-900 hover:bg-neutral-805 border border-neutral-800 transition-colors">
               <ArrowLeft className="w-5 h-5 text-neutral-300" />
             </Link>
             <div>
               <span className="text-[9px] font-black text-red-500 uppercase tracking-[0.2em]">EDITAR SETLIST</span>
-              <h1 className="text-lg font-black uppercase tracking-wider text-white truncate max-w-xs sm:max-w-md">
+              <h1 className="text-base sm:text-lg font-black uppercase tracking-wider text-white truncate max-w-[150px] xs:max-w-xs sm:max-w-md">
                 {name || "Sin Nombre"}
               </h1>
             </div>
           </div>
           
-          <div className="text-[10px] font-black uppercase tracking-widest text-neutral-500 bg-neutral-900 border border-neutral-850 px-4 py-2.5 rounded-xl">
+          <div className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-neutral-500 bg-neutral-900 border border-neutral-850 px-4 py-2.5 rounded-xl">
             Auto-Guardado Activo
           </div>
         </div>
       </header>
 
       {/* Main Grid */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-8 flex flex-col gap-8">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-6 sm:gap-8">
         
         {/* Setlist settings inputs */}
-        <section className="border border-neutral-900 rounded-[2.5rem] p-6 sm:p-8 bg-neutral-900/10">
+        <section className="border border-neutral-900 rounded-[1.5rem] sm:rounded-[2.5rem] p-5 sm:p-8 bg-neutral-900/10">
           <div className="space-y-1.5 max-w-md">
             <label className="text-[10px] uppercase font-black tracking-widest text-neutral-500">Nombre del Setlist</label>
             <input
@@ -177,10 +177,10 @@ export default function EditSetlistPage() {
         </section>
 
         {/* Reordering and selection workspace */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
           
           {/* Library Tracks Selector (Left) */}
-          <div className="border border-neutral-900 rounded-[2.5rem] p-6 bg-neutral-900/10 flex flex-col gap-4">
+          <div className="border border-neutral-900 rounded-[1.5rem] sm:rounded-[2.5rem] p-5 sm:p-6 bg-neutral-900/10 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-[9px] font-black text-red-500 uppercase tracking-widest">PASO 1</span>
@@ -209,12 +209,12 @@ export default function EditSetlistPage() {
                 </Link>
               </div>
             ) : (
-              <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-[35vh] sm:max-h-[50vh] overflow-y-auto pr-1">
                 {librarySongs.map((song) => (
                   <button
                     key={song.id}
                     onClick={() => addSongToSetlist(song.id)}
-                    className="w-full text-left p-4 bg-neutral-900/40 hover:bg-neutral-900 border border-neutral-900 hover:border-neutral-800 rounded-2xl flex items-center justify-between gap-4 transition-all duration-200 group"
+                    className="w-full text-left p-3 sm:p-4 bg-neutral-900/40 hover:bg-neutral-900 border border-neutral-900 hover:border-neutral-800 rounded-xl sm:rounded-2xl flex items-center justify-between gap-3 sm:gap-4 transition-all duration-200 group"
                   >
                     <div className="space-y-0.5 truncate">
                       <h4 className="font-bold text-xs uppercase tracking-wider text-white truncate">{song.title}</h4>
@@ -232,7 +232,7 @@ export default function EditSetlistPage() {
           </div>
 
           {/* Setlist Tracks (Right, Orderer) */}
-          <div className="border border-neutral-900 rounded-[2.5rem] p-6 bg-neutral-900/15 flex flex-col gap-4">
+          <div className="border border-neutral-900 rounded-[1.5rem] sm:rounded-[2.5rem] p-5 sm:p-6 bg-neutral-900/15 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-[9px] font-black text-red-500 uppercase tracking-widest">PASO 2</span>
@@ -244,12 +244,12 @@ export default function EditSetlistPage() {
             </div>
 
             {setlist.songIds.length === 0 ? (
-              <div className="text-center py-16 text-neutral-500 text-xs border border-dashed border-neutral-800 rounded-3xl p-6 bg-neutral-900/10">
+              <div className="text-center py-16 text-neutral-500 text-xs border border-dashed border-neutral-800 rounded-[1.5rem] p-6 bg-neutral-900/10">
                 El setlist está vacío. <br />
                 Haz clic en los temas de la izquierda para agregarlos a esta lista.
               </div>
             ) : (
-              <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-[35vh] sm:max-h-[50vh] overflow-y-auto pr-1">
                 {setlist.songIds.map((songId, index) => {
                   const isBlockItem = songId.startsWith("block:");
                   const blockTitle = isBlockItem ? songId.replace("block:", "") : "";
@@ -259,7 +259,7 @@ export default function EditSetlistPage() {
                     return (
                       <div
                         key={`block-${index}`}
-                        className="p-4 bg-red-950/20 border border-red-900/40 rounded-2xl flex items-center justify-between gap-4 animate-fadeIn"
+                        className="p-3 sm:p-4 bg-red-950/20 border border-red-900/40 rounded-xl sm:rounded-2xl flex items-center justify-between gap-3 sm:gap-4 animate-fadeIn"
                       >
                         <div className="flex items-center gap-3 truncate">
                           <span className="text-[9px] font-black text-red-500 bg-red-950/50 px-2 py-1 rounded-md shrink-0 uppercase tracking-widest">
@@ -271,24 +271,24 @@ export default function EditSetlistPage() {
                         </div>
 
                         {/* Controls: Up, Down, Remove */}
-                        <div className="flex items-center gap-1.5 shrink-0">
+                        <div className="flex items-center gap-1 shrink-0">
                           <button
                             disabled={index === 0}
                             onClick={() => moveSong(index, "up")}
-                            className="p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-neutral-850"
+                            className="p-1.5 sm:p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-neutral-850"
                           >
                             <ArrowUp className="w-3.5 h-3.5" />
                           </button>
                           <button
                             disabled={index === setlist.songIds.length - 1}
                             onClick={() => moveSong(index, "down")}
-                            className="p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-neutral-850"
+                            className="p-1.5 sm:p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-neutral-850"
                           >
                             <ArrowDown className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => removeSongFromSetlist(index)}
-                            className="p-2 rounded-lg bg-neutral-900 hover:bg-red-950/40 text-neutral-400 hover:text-red-400 transition-all border border-neutral-850"
+                            className="p-1.5 sm:p-2 rounded-lg bg-neutral-900 hover:bg-red-950/40 text-neutral-400 hover:text-red-400 transition-all border border-neutral-850"
                           >
                             <X className="w-3.5 h-3.5" />
                           </button>
@@ -300,7 +300,7 @@ export default function EditSetlistPage() {
                   return (
                     <div
                       key={`${songId}-${index}`}
-                      className="p-4 bg-neutral-900/60 border border-neutral-900 rounded-2xl flex items-center justify-between gap-4"
+                      className="p-3 sm:p-4 bg-neutral-900/60 border border-neutral-900 rounded-xl sm:rounded-2xl flex items-center justify-between gap-3 sm:gap-4"
                     >
                       <div className="flex items-center gap-3 truncate">
                         <span className="font-mono text-xs font-bold text-neutral-500 bg-neutral-950 w-7 h-7 shrink-0 rounded-lg flex items-center justify-center">
@@ -320,24 +320,24 @@ export default function EditSetlistPage() {
                       </div>
 
                       {/* Controls: Up, Down, Remove */}
-                      <div className="flex items-center gap-1.5 shrink-0">
+                      <div className="flex items-center gap-1 shrink-0">
                         <button
                           disabled={index === 0}
                           onClick={() => moveSong(index, "up")}
-                          className="p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-neutral-850"
+                          className="p-1.5 sm:p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-neutral-850"
                         >
                           <ArrowUp className="w-3.5 h-3.5" />
                         </button>
                         <button
                           disabled={index === setlist.songIds.length - 1}
                           onClick={() => moveSong(index, "down")}
-                          className="p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-neutral-850"
+                          className="p-1.5 sm:p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all border border-neutral-850"
                         >
                           <ArrowDown className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => removeSongFromSetlist(index)}
-                          className="p-2 rounded-lg bg-neutral-900 hover:bg-red-950/40 text-neutral-400 hover:text-red-400 transition-all border border-neutral-850"
+                          className="p-1.5 sm:p-2 rounded-lg bg-neutral-900 hover:bg-red-950/40 text-neutral-400 hover:text-red-400 transition-all border border-neutral-850"
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>

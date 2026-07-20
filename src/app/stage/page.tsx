@@ -388,13 +388,13 @@ export default function StagePage() {
       </header>
 
       {/* Main Player Display */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-8 flex flex-col justify-between gap-8">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-4 sm:py-8 flex flex-col justify-between gap-4 sm:gap-8">
         {/* Song Select List & Detail Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 flex-1 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-8 flex-1 items-stretch">
           
           {/* Song selection list (sidebar, disabled on lock) */}
           <div className={`
-            border border-neutral-900 rounded-[2.5rem] p-6 bg-neutral-950 lg:bg-neutral-900/10 
+            border border-neutral-900 rounded-[1.5rem] sm:rounded-[2.5rem] p-5 sm:p-6 bg-neutral-950 lg:bg-neutral-900/10 
             flex flex-col justify-between gap-4 overflow-y-auto transition-all duration-300
             ${isListOpen 
               ? "fixed inset-0 z-50 m-4 sm:m-6 shadow-2xl border-neutral-800" 
@@ -419,7 +419,7 @@ export default function StagePage() {
                   return (
                     <div 
                       key={s.id}
-                      className="py-2.5 px-4 mt-4 first:mt-0 border-l-2 border-red-600 text-[9px] font-black text-red-500 uppercase tracking-[0.2em] bg-red-950/5 rounded-xl"
+                      className="py-2.5 px-4 mt-4 first:mt-0 border-l-2 border-red-650 text-[9px] font-black text-red-500 uppercase tracking-[0.2em] bg-red-950/5 rounded-xl"
                     >
                       {s.title}
                     </div>
@@ -453,7 +453,7 @@ export default function StagePage() {
           </div>
 
           {/* Large Screen Monitor */}
-          <div className="lg:col-span-3 border border-neutral-900 rounded-[2.5rem] p-8 bg-neutral-900/20 flex flex-col justify-between relative overflow-hidden">
+          <div className="lg:col-span-3 border border-neutral-900 rounded-[1.5rem] sm:rounded-[2.5rem] p-5 sm:p-8 bg-neutral-900/20 flex flex-col justify-between relative overflow-hidden">
             {/* Lock Indicator */}
             {isLocked && (
               <div className="absolute top-6 right-6 px-3 py-1 bg-red-950/40 border border-red-900 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-full flex items-center gap-1.5 animate-pulse">
@@ -558,12 +558,12 @@ export default function StagePage() {
           </button>
 
           {/* Main Playback Operations */}
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-2 sm:gap-5">
             {/* Back / Restart */}
             <button
               onClick={handleRestartSong}
               disabled={isLocked}
-              className="p-4 rounded-2xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
               title="Reiniciar tema"
             >
               <RotateCcw className="w-5 h-5" />
@@ -573,7 +573,7 @@ export default function StagePage() {
             <button
               onClick={() => selectSong(currentIndex - 1)}
               disabled={isLocked || currentIndex === 0}
-              className="p-4 rounded-2xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
               title="Tema anterior"
             >
               <SkipBack className="w-5 h-5" />
@@ -583,16 +583,16 @@ export default function StagePage() {
             <button
               onClick={handlePlayPause}
               disabled={playbackStatus === "loading" || playbackStatus === "idle"}
-              className={`w-18 h-18 sm:w-24 sm:h-24 rounded-3xl flex items-center justify-center border transition-all duration-300 shadow-2xl ${
+              className={`w-16 h-16 sm:w-24 sm:h-24 rounded-2xl sm:rounded-3xl flex items-center justify-center border transition-all duration-300 shadow-2xl ${
                 playbackStatus === "playing"
                   ? "bg-neutral-900 border-neutral-800 text-white"
                   : "bg-red-600 border-red-500 text-white shadow-red-600/20 hover:scale-105"
               } disabled:opacity-30 disabled:cursor-not-allowed`}
             >
               {playbackStatus === "playing" ? (
-                <Pause className="w-8 h-8 fill-white" />
+                <Pause className="w-6 h-6 sm:w-8 sm:h-8 fill-white" />
               ) : (
-                <Play className="w-8 h-8 fill-white ml-1" />
+                <Play className="w-6 h-6 sm:w-8 sm:h-8 fill-white ml-1" />
               )}
             </button>
 
@@ -600,7 +600,7 @@ export default function StagePage() {
             <button
               onClick={() => selectSong(currentIndex + 1)}
               disabled={isLocked || currentIndex === songs.length - 1}
-              className="p-4 rounded-2xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
               title="Siguiente tema"
             >
               <SkipForward className="w-5 h-5" />
@@ -610,7 +610,7 @@ export default function StagePage() {
             <button
               onClick={handleStop}
               disabled={playbackStatus === "stopped" || playbackStatus === "ready" || playbackStatus === "idle"}
-              className="p-4 rounded-2xl bg-neutral-900 hover:bg-red-950/20 border border-neutral-800 hover:border-red-900/30 text-neutral-300 hover:text-red-500 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-neutral-900 hover:bg-red-950/20 border border-neutral-800 hover:border-red-900/30 text-neutral-300 hover:text-red-500 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
               title="Detener audio"
             >
               <Square className="w-5 h-5" />

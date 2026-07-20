@@ -135,23 +135,26 @@ export default function HomePage() {
         </div>
 
         {/* Online / Offline status & settings */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {isOnline ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-900 border border-neutral-850 text-[10px] font-black text-neutral-400 uppercase tracking-widest">
-              <Wifi className="w-3.5 h-3.5 text-neutral-500" /> ONLINE
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 rounded-xl bg-neutral-900 border border-neutral-850 text-[10px] font-black text-neutral-400 uppercase tracking-widest">
+              <Wifi className="w-3.5 h-3.5 text-neutral-500" />
+              <span className="hidden sm:inline">ONLINE</span>
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-950/20 border border-red-900/50 text-[10px] font-black text-red-400 uppercase tracking-widest animate-pulse">
-              <WifiOff className="w-3.5 h-3.5 text-red-500" /> OFFLINE-MODE
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 rounded-xl bg-red-950/20 border border-red-900/50 text-[10px] font-black text-red-400 uppercase tracking-widest animate-pulse">
+              <WifiOff className="w-3.5 h-3.5 text-red-500" />
+              <span className="hidden sm:inline">OFFLINE-MODE</span>
             </span>
           )}
 
           {!isInstalled && (
             <button
               onClick={() => setIsInstallModalOpen(true)}
-              className="px-3.5 py-2 bg-red-600/10 hover:bg-red-600 border border-red-900/40 hover:border-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-white transition-all flex items-center gap-1.5 shadow-lg shadow-red-650/5"
+              className="px-2.5 py-2 sm:px-3.5 bg-red-600/10 hover:bg-red-600 border border-red-900/40 hover:border-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-white transition-all flex items-center gap-1.5 shadow-lg shadow-red-650/5"
             >
-              <Smartphone className="w-3.5 h-3.5" /> INSTALAR APP
+              <Smartphone className="w-3.5 h-3.5" />
+              <span>INSTALAR<span className="hidden sm:inline"> APP</span></span>
             </button>
           )}
 
@@ -166,43 +169,43 @@ export default function HomePage() {
       </header>
 
       {/* Main Panel Options */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-12 flex flex-col justify-center gap-12">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-12 flex flex-col justify-center gap-8 sm:gap-12">
         {/* Pitch Hero Title */}
-        <div className="text-center space-y-4 max-w-2xl mx-auto">
-          <h2 className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-white leading-none">
+        <div className="text-center space-y-3 sm:space-y-4 max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white leading-tight sm:leading-none">
             REPRODUCTOR DE SECUENCIAS <br />
             <span className="text-red-500 italic pr-3">PARA ESCENARIO</span>
           </h2>
-          <p className="text-sm text-neutral-400 font-medium max-w-md mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm text-neutral-400 font-medium max-w-md mx-auto leading-relaxed">
             Lanza pistas de audio estéreo estables en vivo sin conexión a internet.
           </p>
         </div>
 
         {/* Grid navigation buttons */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto w-full">
           
           {/* STAGE MODE CARD (BIG PLAY) */}
           <Link
             href="/stage"
-            className="group p-8 rounded-[2.5rem] border-2 border-red-650 bg-red-950/10 hover:bg-red-600 transition-all duration-500 flex flex-col justify-between gap-12 shadow-2xl shadow-red-600/5 relative overflow-hidden"
+            className="group p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] border-2 border-red-650 bg-red-950/10 hover:bg-red-600 transition-all duration-500 flex flex-col justify-between gap-6 sm:gap-12 shadow-2xl shadow-red-600/5 relative overflow-hidden"
           >
             <div className="absolute -top-6 -right-6 w-32 h-32 bg-red-650/10 rounded-full blur-2xl group-hover:bg-red-500/25 transition-colors" />
             
-            <div className="w-14 h-14 rounded-2xl bg-red-600 group-hover:bg-neutral-950/20 flex items-center justify-center transition-colors">
-              <Play className="w-6 h-6 fill-white text-white" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-red-600 group-hover:bg-neutral-950/20 flex items-center justify-center transition-colors">
+              <Play className="w-5.5 h-5.5 fill-white text-white" />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <span className="text-[9px] font-black text-red-500 group-hover:text-red-200 uppercase tracking-widest block">
                 {lastSetlistName ? `Setlist activo: ${lastSetlistName}` : "Todo el Repertorio"}
               </span>
-              <h3 className="font-black text-xl uppercase tracking-wider text-white">MODO ESCENARIO</h3>
-              <p className="text-xs text-red-300 group-hover:text-red-100 leading-relaxed font-semibold transition-colors">
+              <h3 className="font-black text-lg sm:text-xl uppercase tracking-wider text-white">MODO ESCENARIO</h3>
+              <p className="text-[11px] sm:text-xs text-red-300 group-hover:text-red-100 leading-relaxed font-semibold transition-colors">
                 Ingresar al reproductor táctil de escenario con controles de gran escala y bloqueo de seguridad.
               </p>
             </div>
             
-            <span className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-1">
+            <span className="text-[9px] sm:text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-1">
               ABRIR REPRODUCTOR <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </span>
           </Link>
@@ -210,20 +213,20 @@ export default function HomePage() {
           {/* SETLISTS CARD */}
           <Link
             href="/setlists"
-            className="group p-8 rounded-[2.5rem] border border-neutral-900 bg-neutral-900/10 hover:bg-neutral-900 hover:border-neutral-800 transition-all duration-300 flex flex-col justify-between gap-12 relative overflow-hidden"
+            className="group p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] border border-neutral-900 bg-neutral-900/10 hover:bg-neutral-900 hover:border-neutral-800 transition-all duration-300 flex flex-col justify-between gap-6 sm:gap-12 relative overflow-hidden"
           >
-            <div className="w-14 h-14 rounded-2xl bg-neutral-900 group-hover:bg-neutral-850 flex items-center justify-center border border-neutral-800 transition-all">
-              <Music className="w-6 h-6 text-red-500" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-neutral-900 group-hover:bg-neutral-850 flex items-center justify-center border border-neutral-800 transition-all">
+              <Music className="w-5.5 h-5.5 text-red-500" />
             </div>
 
-            <div className="space-y-2">
-              <h3 className="font-black text-xl uppercase tracking-wider text-white">SETLISTS</h3>
-              <p className="text-xs text-neutral-400 leading-relaxed">
+            <div className="space-y-1.5">
+              <h3 className="font-black text-lg sm:text-xl uppercase tracking-wider text-white">SETLISTS</h3>
+              <p className="text-[11px] sm:text-xs text-neutral-400 leading-relaxed">
                 Crear playlists específicas para shows, duplicarlas y organizar el orden de las canciones ↑ ↓.
               </p>
             </div>
             
-            <span className="text-[10px] font-black text-red-500 uppercase tracking-widest flex items-center gap-1">
+            <span className="text-[9px] sm:text-[10px] font-black text-red-500 uppercase tracking-widest flex items-center gap-1">
               GESTIONAR SHOWS <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </span>
           </Link>
@@ -231,20 +234,20 @@ export default function HomePage() {
           {/* LIBRARY CARD */}
           <Link
             href="/library"
-            className="group p-8 rounded-[2.5rem] border border-neutral-900 bg-neutral-900/10 hover:bg-neutral-900 hover:border-neutral-800 transition-all duration-300 flex flex-col justify-between gap-12 relative overflow-hidden"
+            className="group p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] border border-neutral-900 bg-neutral-900/10 hover:bg-neutral-900 hover:border-neutral-800 transition-all duration-300 flex flex-col justify-between gap-6 sm:gap-12 relative overflow-hidden"
           >
-            <div className="w-14 h-14 rounded-2xl bg-neutral-900 group-hover:bg-neutral-850 flex items-center justify-center border border-neutral-800 transition-all">
-              <Library className="w-6 h-6 text-red-500" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-neutral-900 group-hover:bg-neutral-850 flex items-center justify-center border border-neutral-800 transition-all">
+              <Library className="w-5.5 h-5.5 text-red-500" />
             </div>
 
-            <div className="space-y-2">
-              <h3 className="font-black text-xl uppercase tracking-wider text-white">BIBLIOTECA</h3>
-              <p className="text-xs text-neutral-400 leading-relaxed">
+            <div className="space-y-1.5">
+              <h3 className="font-black text-lg sm:text-xl uppercase tracking-wider text-white">BIBLIOTECA</h3>
+              <p className="text-[11px] sm:text-xs text-neutral-400 leading-relaxed">
                 Importar audios locales, pre-escuchar pistas y auditar canales estéreos (L/R).
               </p>
             </div>
             
-            <span className="text-[10px] font-black text-red-500 uppercase tracking-widest flex items-center gap-1">
+            <span className="text-[9px] sm:text-[10px] font-black text-red-500 uppercase tracking-widest flex items-center gap-1">
               VER REPERTORIO ({songsCount} TEMAS) <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </span>
           </Link>
@@ -252,27 +255,27 @@ export default function HomePage() {
           {/* DIAGNOSTICS CARD */}
           <Link
             href="/diagnostics"
-            className="group p-8 rounded-[2.5rem] border border-neutral-900 bg-neutral-900/10 hover:bg-neutral-900 hover:border-neutral-800 transition-all duration-300 flex flex-col justify-between gap-12 relative overflow-hidden"
+            className="group p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] border border-neutral-900 bg-neutral-900/10 hover:bg-neutral-900 hover:border-neutral-800 transition-all duration-300 flex flex-col justify-between gap-6 sm:gap-12 relative overflow-hidden"
           >
-            <div className="w-14 h-14 rounded-2xl bg-neutral-900 group-hover:bg-neutral-850 flex items-center justify-center border border-neutral-800 transition-all">
-              <Activity className="w-6 h-6 text-red-500" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-neutral-900 group-hover:bg-neutral-850 flex items-center justify-center border border-neutral-800 transition-all">
+              <Activity className="w-5.5 h-5.5 text-red-500" />
             </div>
 
-            <div className="space-y-2">
-              <h3 className="font-black text-xl uppercase tracking-wider text-white">DIAGNÓSTICO L/R</h3>
-              <p className="text-xs text-neutral-400 leading-relaxed">
+            <div className="space-y-1.5">
+              <h3 className="font-black text-lg sm:text-xl uppercase tracking-wider text-white">DIAGNÓSTICO L/R</h3>
+              <p className="text-[11px] sm:text-xs text-neutral-400 leading-relaxed">
                 Validar salida física: izquierdo para monitores/click y derecho para audio de sala (PA).
               </p>
             </div>
             
-            <span className="text-[10px] font-black text-red-500 uppercase tracking-widest flex items-center gap-1">
+            <span className="text-[9px] sm:text-[10px] font-black text-red-500 uppercase tracking-widest flex items-center gap-1">
               {lastTestDate ? "ÚLTIMO TEST: DIAGNÓSTICO OK" : "HACER PRUEBA DE AUDIO"} <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </span>
           </Link>
         </div>
 
         {/* Dashboard Status Footer / Storage Info */}
-        <section className="max-w-4xl mx-auto w-full grid grid-cols-1 sm:grid-cols-2 gap-6 bg-neutral-900/10 border border-neutral-900 rounded-[2.5rem] p-6 text-xs text-neutral-400">
+        <section className="max-w-4xl mx-auto w-full grid grid-cols-1 sm:grid-cols-2 gap-6 bg-neutral-900/10 border border-neutral-900 rounded-[1.5rem] sm:rounded-[2.5rem] p-5 sm:p-6 text-xs text-neutral-400">
           {/* Storage Estimate */}
           <div className="flex items-center gap-4">
             <div className="p-3 bg-neutral-900 rounded-2xl border border-neutral-800 text-neutral-500">
@@ -286,7 +289,7 @@ export default function HomePage() {
           </div>
 
           {/* Persist Storage Alert */}
-          <div className="flex items-center justify-between gap-4 border-t border-neutral-900 pt-4 sm:pt-0 sm:border-t-0 sm:border-l sm:border-neutral-900 sm:pl-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-neutral-900 pt-4 sm:pt-0 sm:border-t-0 sm:border-l sm:border-neutral-900 sm:pl-6">
             <div className="space-y-1">
               <span className="text-[10px] font-black text-neutral-500 uppercase tracking-widest block">Protección de Datos</span>
               <span className="text-sm font-bold text-white uppercase tracking-wide">
@@ -301,7 +304,7 @@ export default function HomePage() {
             {!storagePersisted && (
               <button
                 onClick={handleRequestPersistence}
-                className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 rounded-xl text-[10px] font-black text-white uppercase tracking-widest transition-colors shrink-0"
+                className="w-full sm:w-auto px-4 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 rounded-xl text-[10px] font-black text-white uppercase tracking-widest transition-colors shrink-0 text-center"
               >
                 PROTEGER
               </button>

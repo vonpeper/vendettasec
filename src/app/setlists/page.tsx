@@ -124,28 +124,28 @@ export default function SetlistsPage() {
     <div className="min-h-screen bg-neutral-950 text-white flex flex-col">
       {/* Header */}
       <header className="border-b border-neutral-900 bg-neutral-950/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="p-2 -ml-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link href="/" className="p-2 -ml-1 sm:-ml-2 rounded-xl bg-neutral-900 hover:bg-neutral-805 border border-neutral-800 transition-colors">
               <ArrowLeft className="w-5 h-5 text-neutral-300" />
             </Link>
-            <h1 className="text-xl font-black uppercase tracking-widest text-white">
+            <h1 className="text-lg sm:text-xl font-black uppercase tracking-widest text-white">
               Setlists
             </h1>
           </div>
           
           <button
             onClick={() => setIsCreateOpen(true)}
-            className="px-5 py-2.5 bg-red-600 hover:bg-red-500 border border-red-500 rounded-2xl font-black text-xs uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-lg shadow-red-650/10"
+            className="px-3.5 py-2 sm:px-5 sm:py-2.5 bg-red-600 hover:bg-red-500 border border-red-500 rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest transition-all duration-300 flex items-center gap-1.5 sm:gap-2 shadow-lg shadow-red-650/10"
           >
             <Plus className="w-4 h-4" />
-            NUEVO SETLIST
+            <span>NUEVO<span className="hidden sm:inline"> SETLIST</span></span>
           </button>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-8">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 text-neutral-500 gap-3">
             <span className="w-6 h-6 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
@@ -174,9 +174,9 @@ export default function SetlistsPage() {
             {setlists.map((set) => (
               <div 
                 key={set.id}
-                className="border-2 border-neutral-900 rounded-[2.5rem] p-8 bg-neutral-900/10 flex flex-col justify-between gap-6 hover:border-neutral-850 transition-all duration-300"
+                className="border-2 border-neutral-900 rounded-[1.5rem] sm:rounded-[2.5rem] p-5 sm:p-8 bg-neutral-900/10 flex flex-col justify-between gap-6 hover:border-neutral-850 transition-all duration-300"
               >
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-black text-red-500 uppercase tracking-[0.2em]">{set.songIds.length} TEMAS</span>
                     <span className="text-[10px] font-mono font-bold text-neutral-500 flex items-center gap-1">
@@ -185,35 +185,35 @@ export default function SetlistsPage() {
                   </div>
                   
                   <div className="space-y-1">
-                    <h3 className="text-2xl font-black uppercase text-white tracking-wide truncate">{set.name}</h3>
+                    <h3 className="text-xl sm:text-2xl font-black uppercase text-white tracking-wide truncate">{set.name}</h3>
                   </div>
                 </div>
 
                 {/* Card footer buttons */}
-                <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-neutral-900/60">
+                <div className="flex items-center gap-2 pt-4 border-t border-neutral-900/60">
                   <Link
                     href="/stage"
                     onClick={() => handleLaunchStage(set.id)}
-                    className="flex-1 min-w-[120px] px-4 py-3 bg-red-650/15 hover:bg-red-600 border border-red-900/30 hover:border-red-500 text-red-400 hover:text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-1.5 shadow-lg shadow-red-650/5"
+                    className="flex-1 px-3 py-2.5 sm:px-4 sm:py-3 bg-red-650/15 hover:bg-red-600 border border-red-900/30 hover:border-red-500 text-red-400 hover:text-white rounded-xl sm:rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-1.5 shadow-lg shadow-red-650/5 text-center"
                   >
                     <Play className="w-3.5 h-3.5 fill-current" /> ESCENARIO
                   </Link>
                   <Link
                     href={`/setlists/${set.id}`}
-                    className="px-4 py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 rounded-2xl font-black text-xs uppercase tracking-widest transition-all"
+                    className="p-2.5 sm:px-4 sm:py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest transition-all"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </Link>
                   <button
                     onClick={() => handleDuplicate(set)}
-                    className="px-4 py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 rounded-2xl font-black text-xs uppercase tracking-widest transition-all"
+                    className="p-2.5 sm:px-4 sm:py-3 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest transition-all"
                     title="Duplicar Setlist"
                   >
                     <Copy className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => handleDelete(set)}
-                    className="px-4 py-3 bg-neutral-900 hover:bg-red-950/40 border border-neutral-800 hover:border-red-900/40 text-neutral-400 hover:text-red-400 rounded-2xl font-black text-xs uppercase tracking-widest transition-all"
+                    className="p-2.5 sm:px-4 sm:py-3 bg-neutral-900 hover:bg-red-950/40 border border-neutral-800 hover:border-red-900/40 text-neutral-400 hover:text-red-400 rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-widest transition-all"
                     title="Eliminar Setlist"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
